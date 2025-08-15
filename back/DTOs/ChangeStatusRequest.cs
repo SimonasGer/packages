@@ -1,0 +1,1 @@
+public sealed record ChangeStatusRequest(Status NextStatus);
