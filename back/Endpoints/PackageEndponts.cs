@@ -17,26 +17,37 @@ public static class PackageEndpoints
          * ========================= */
         app.MapGet("/packages", async (PackageDbContext db) =>
         {
+            // 1) Query only SQL-translatable stuff
             var data = await db.Packages
                 .AsNoTracking()
-                .Select(p => new ListDto
+                .Select(p => new
                 {
-                    Id = p.Id,
-                    TrackingNumber = p.TrackingNumber,
+                    p.Id,
+                    p.TrackingNumber,
                     Sender = p.Sender.Name,
                     Recipient = p.Recipient.Name,
-                    CurrentStatus = p.CurrentStatus,
-                    // creation = earliest event
-                    DateCreated = p.History
-                        .OrderBy(h => h.Date)
-                        .Select(h => (DateTimeOffset?)h.Date)
-                        .FirstOrDefault()
+                    p.CurrentStatus,
+                    // Earliest event = creation time (translates nicely with Min)
+                    DateCreated = (DateTimeOffset?)p.History.Min(h => h.Date)
                 })
                 .OrderByDescending(x => x.DateCreated)
                 .ToListAsync();
 
-            return Results.Ok(data);
+            // 2) Add allowed transitions in memory
+            var result = data.Select(x => new ListDto
+            {
+                Id = x.Id,
+                TrackingNumber = x.TrackingNumber,
+                Sender = x.Sender,
+                Recipient = x.Recipient,
+                CurrentStatus = x.CurrentStatus,
+                DateCreated = x.DateCreated,
+                AllowedTransitions = StatusRules.AllowedFrom(x.CurrentStatus)
+            }).ToList();
+
+            return Results.Ok(result);
         });
+
 
         /* =========================
          * GET /packages/{id}  (DETAILS)

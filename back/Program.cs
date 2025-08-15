@@ -11,6 +11,20 @@ builder.Services.AddOpenApiDocument(config =>
     config.Title = "PackageAPI v1";
     config.Version = "v1";
 });
+
+var allowedOrigin = "http://localhost:3000";
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("FrontendOnly", policy =>
+    {
+        policy.WithOrigins(allowedOrigin)
+            .AllowAnyHeader()
+            .WithMethods("GET","POST","PUT","PATCH","DELETE","OPTIONS")
+            .AllowCredentials();
+    });
+});
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -24,6 +38,7 @@ if (app.Environment.IsDevelopment())
         config.DocExpansion = "list";
     });
 }
+app.UseCors("FrontendOnly");
 
 app.MapPackageEndpoints();
 

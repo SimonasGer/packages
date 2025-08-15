@@ -57,3 +57,4 @@ C:\Users\simon\Desktop\Code\packages\back\obj\Debug\net9.0\refint\back.dll
 C:\Users\simon\Desktop\Code\packages\back\obj\Debug\net9.0\back.pdb
 C:\Users\simon\Desktop\Code\packages\back\obj\Debug\net9.0\back.genruntimeconfig.cache
 C:\Users\simon\Desktop\Code\packages\back\obj\Debug\net9.0\ref\back.dll
+C:\Users\simon\Desktop\Code\packages\back\obj\Debug\net9.0\back.sourcelink.json
