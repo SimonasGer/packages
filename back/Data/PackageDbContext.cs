@@ -1,11 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 
-public class PackageDbContext : DbContext
+public class PackageDbContext(DbContextOptions<PackageDbContext> options) : DbContext(options)
 {
     public DbSet<Package> Packages => Set<Package>();
     public DbSet<PackageStatus> Events => Set<PackageStatus>();
-
-    public PackageDbContext(DbContextOptions<PackageDbContext> options) : base(options) {}
 
     protected override void OnModelCreating(ModelBuilder b)
     {

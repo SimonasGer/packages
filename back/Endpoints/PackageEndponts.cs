@@ -1,57 +1,54 @@
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 
-// NOTE: Assumes you already have these domain types somewhere:
-// - enum Status { Created, Sent, Accepted, Returned, Canceled }
-// - record Person(string Name, string Phone, string Address);
-// - class Package { Guid Id; string TrackingNumber; Person Sender; Person Recipient; Status CurrentStatus; List<PackageEvent> History; }
-// - class PackageEvent { int Id; Guid PackageId; Status Status; DateTimeOffset Date; }
-// - class PackageDbContext : DbContext { DbSet<Package> Packages; DbSet<PackageEvent> Events; }
-
 public static class PackageEndpoints
 {
     public static void MapPackageEndpoints(this IEndpointRouteBuilder app)
     {
-        /* =========================
-         * GET /packages  (LIST)
-         * ========================= */
-        app.MapGet("/packages", async (PackageDbContext db) =>
+    app.MapGet("/packages", async (PackageDbContext db, string? status) =>
+    {
+        var query = db.Packages.AsNoTracking();
+
+        if (!string.IsNullOrEmpty(status))
         {
-            // 1) Query only SQL-translatable stuff
-            var data = await db.Packages
-                .AsNoTracking()
-                .Select(p => new
-                {
-                    p.Id,
-                    p.TrackingNumber,
-                    Sender = p.Sender.Name,
-                    Recipient = p.Recipient.Name,
-                    p.CurrentStatus,
-                    // Earliest event = creation time (translates nicely with Min)
-                    DateCreated = (DateTimeOffset?)p.History.Min(h => h.Date)
-                })
-                .OrderByDescending(x => x.DateCreated)
-                .ToListAsync();
-
-            // 2) Add allowed transitions in memory
-            var result = data.Select(x => new ListDto
+            if (Enum.TryParse<Status>(status, out var parsedStatus))
             {
-                Id = x.Id,
-                TrackingNumber = x.TrackingNumber,
-                Sender = x.Sender,
-                Recipient = x.Recipient,
-                CurrentStatus = x.CurrentStatus,
-                DateCreated = x.DateCreated,
-                AllowedTransitions = StatusRules.AllowedFrom(x.CurrentStatus)
-            }).ToList();
+                query = query.Where(p => p.CurrentStatus == parsedStatus);
+            }
+            else
+            {
+                return Results.Ok(new List<ListDto>());
+            }
+        }
 
-            return Results.Ok(result);
-        });
+        var data = await query
+            .Select(p => new
+            {
+                p.Id,
+                p.TrackingNumber,
+                Sender = p.Sender.Name,
+                Recipient = p.Recipient.Name,
+                p.CurrentStatus,
+                DateCreated = (DateTimeOffset?)p.History.Min(h => h.Date)
+            })
+            .OrderByDescending(x => x.DateCreated)
+            .ToListAsync();
+
+        var result = data.Select(x => new ListDto
+        {
+            Id = x.Id,
+            TrackingNumber = x.TrackingNumber,
+            Sender = x.Sender,
+            Recipient = x.Recipient,
+            CurrentStatus = x.CurrentStatus,
+            DateCreated = x.DateCreated,
+            AllowedTransitions = StatusRules.AllowedFrom(x.CurrentStatus)
+        }).ToList();
+
+        return Results.Ok(result);
+    });
 
 
-        /* =========================
-         * GET /packages/{id}  (DETAILS)
-         * ========================= */
         app.MapGet("/packages/{id:guid}", async (Guid id, PackageDbContext db) =>
         {
             var p = await db.Packages
@@ -67,7 +64,7 @@ public static class PackageEndpoints
                 p.Sender,
                 p.Recipient,
                 p.CurrentStatus,
-                p.History.OrderByDescending(h => h.Date).First().Date, // timestamp of current status
+                p.History.OrderByDescending(h => h.Date).First().Date,
                 p.History.OrderBy(h => h.Date)
                          .Select(h => new HistoryItem(h.Status, h.Date))
                          .ToList(),
@@ -77,9 +74,6 @@ public static class PackageEndpoints
             return Results.Ok(details);
         });
 
-        /* =========================
-         * POST /packages  (CREATE)
-         * ========================= */
         app.MapPost("/packages", async (PackageDbContext db, CreatePackageRequest req) =>
         {
             if (string.IsNullOrWhiteSpace(req.SenderName) || string.IsNullOrWhiteSpace(req.RecipientName))
@@ -95,7 +89,6 @@ public static class PackageEndpoints
                 History = new List<PackageStatus>()
             };
 
-            // initial history event
             pkg.History.Add(new PackageStatus
             {
                 PackageId = pkg.Id,
@@ -120,9 +113,6 @@ public static class PackageEndpoints
             return Results.Created($"/packages/{pkg.Id}", details);
         });
 
-        /* ======================================
-         * POST /packages/{id}/status  (CHANGE)
-         * ====================================== */
         app.MapPost("/packages/{id:guid}/status", async (Guid id, PackageDbContext db, ChangeStatusRequest req) =>
         {
             var pkg = await db.Packages
@@ -144,7 +134,6 @@ public static class PackageEndpoints
 
             await db.SaveChangesAsync();
 
-            // return a small payload (snappy UI updates) + allowed next actions
             return Results.Ok(new ChangeStatusResultDto(
                 pkg.Id,
                 pkg.CurrentStatus,
@@ -153,11 +142,3 @@ public static class PackageEndpoints
         });
     }
 }
-
-/* =========================
- * DTOs (requests/responses)
- * ========================= */
-
-/* =========================
- * Helpers (endpoint-scoped)
- * ========================= */

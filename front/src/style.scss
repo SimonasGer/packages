@@ -1,6 +1,3 @@
-/* styles.scss */
-
-/* Global resets and variables */
 $bg-light: #f8f9fa;
 $bg-dark: #2c2c2c;
 $primary: #007bff;
@@ -10,168 +7,163 @@ $success: #28a745;
 $text-dark: #333;
 
 body {
-  font-family: Arial, sans-serif;
-  background-color: $bg-light;
-  color: $text-dark;
-  margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: $bg-light;
+    color: $text-dark;
+    margin: 0;
 }
 
-/* ===== Main dashboard page ===== */
 .main {
-  padding: 1rem 2rem;
+    padding: 1rem 2rem;
 
-  h1 {
-    margin-top: 0;
-    font-size: 1.8rem;
-  }
-
-  button {
-    background-color: $primary;
-    color: white;
-    padding: 0.5rem 1rem;
-    margin: 0.25rem;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-
-    &:hover {
-      background-color: $primary-hover;
+    h1 {
+        margin-top: 0;
+        font-size: 1.8rem;
     }
-  }
-
-  dialog {
-    border: none;
-    border-radius: 8px;
-    padding: 1.5rem;
-    background-color: white;
-    max-width: 500px;
-
-    h2 {
-      margin-top: 0;
-    }
-
-    form {
-      fieldset {
-        border: none;
-        padding: 0;
-
-        div {
-          display: flex;
-          flex-direction: column;
-          margin-bottom: 1rem;
-
-          input {
-            padding: 0.5rem;
-            margin-bottom: 0.5rem;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-
-            &:focus {
-              outline: none;
-              border-color: $primary;
-              box-shadow: 0 0 0 2px rgba($primary, 0.2);
-            }
-          }
-        }
-      }
-    }
-  }
-}
-
-/* ===== Package details page ===== */
-.package-page {
-  padding: 1rem 2rem;
-
-  a {
-    display: inline-block;
-    margin-bottom: 1rem;
-    color: $primary;
-    text-decoration: none;
-
-    &:hover {
-      text-decoration: underline;
-    }
-  }
-
-  h1 {
-    margin-top: 0;
-    font-size: 1.8rem;
-  }
-
-  h3 {
-    margin-top: 1.5rem;
-    margin-bottom: 0.5rem;
-  }
-
-  button {
-    background-color: $success;
-    color: white;
-    padding: 0.4rem 0.8rem;
-    margin: 0.25rem;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-
-    &:hover {
-      background-color: darken($success, 8%);
-    }
-  }
-
-  ul {
-    list-style: none;
-    padding: 0;
-
-    li {
-      padding: 0.3rem 0;
-      border-bottom: 1px solid #eee;
-    }
-  }
-}
-
-/* ===== List section ===== */
-section {
-  margin-top: 1rem;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 1rem;
-}
-
-/* ===== Individual list items ===== */
-.list-item {
-  background-color: white;
-  padding: 1rem;
-  border-radius: 6px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-
-  p {
-    margin: 0.25rem 0;
-
-    &:first-child {
-      font-weight: bold;
-      color: $primary;
-      cursor: pointer;
-
-      &:hover {
-        text-decoration: underline;
-      }
-    }
-  }
-
-  div {
-    margin-top: 0.5rem;
 
     button {
-      background-color: $primary;
-      color: white;
-      padding: 0.3rem 0.6rem;
-      margin: 0.2rem;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
+        background-color: $primary;
+        color: white;
+        padding: 0.5rem 1rem;
+        margin: 0.25rem;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
 
-      &:hover {
-        background-color: $primary-hover;
-      }
+        &:hover {
+            background-color: $primary-hover;
+        }
     }
-  }
+
+    dialog {
+        border: none;
+        border-radius: 8px;
+        padding: 1.5rem;
+        background-color: white;
+        max-width: 500px;
+
+        h2 {
+            margin-top: 0;
+        }
+
+        form {
+            fieldset {
+                border: none;
+                padding: 0;
+
+                div {
+                    display: flex;
+                    flex-direction: column;
+                    margin-bottom: 1rem;
+
+                    input {
+                        padding: 0.5rem;
+                        margin-bottom: 0.5rem;
+                        border: 1px solid #ccc;
+                        border-radius: 4px;
+
+                        &:focus {
+                            outline: none;
+                            border-color: $primary;
+                            box-shadow: 0 0 0 2px rgba($primary, 0.2);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+.package-page {
+    padding: 1rem 2rem;
+    a {
+        display: inline-block;
+        margin-bottom: 1rem;
+        color: $primary;
+        text-decoration: none;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+
+    h1 {
+        margin-top: 0;
+        font-size: 1.8rem;
+    }
+
+    h3 {
+        margin-top: 1.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    button {
+        background-color: $success;
+        color: white;
+        padding: 0.4rem 0.8rem;
+        margin: 0.25rem;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+
+        &:hover {
+            background-color: darken($success, 8%);
+        }
+    }
+
+    ul {
+        list-style: none;
+        padding: 0;
+
+        li {
+            padding: 0.3rem 0;
+            border-bottom: 1px solid #eee;
+        }
+    }
+}
+
+section {
+    margin-top: 1rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1rem;
+}
+
+.list-item {
+    background-color: white;
+    padding: 1rem;
+    border-radius: 6px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+
+    p {
+        margin: 0.25rem 0;
+
+        &:first-child {
+            font-weight: bold;
+            color: $primary;
+            cursor: pointer;
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+    }
+
+    div {
+        margin-top: 0.5rem;
+
+        button {
+            background-color: $primary;
+            color: white;
+            padding: 0.3rem 0.6rem;
+            margin: 0.2rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+
+            &:hover {
+                background-color: $primary-hover;
+            }
+        }
+    }
 }

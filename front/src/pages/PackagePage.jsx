@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { statusDisplayer } from "../helpers/statusDisplayer";
 export const PackagePage = () => {
     const [item, setItem] = useState({
         id: "",
@@ -70,13 +71,13 @@ export const PackagePage = () => {
                 <p>Address: {item.sender.address}</p>
                 <p>Recipient: {item.recipient.name} ({item.recipient.phone})</p>
                 <p>Address: {item.recipient.address}</p>
-                <p>Status: {item.currentStatus}</p>
-                <p>Date Created: {new Date(item.dateCreated).toLocaleDateString()}</p>
+                <p>Status: {statusDisplayer(item.currentStatus)}</p>
+                <p>Date Created: {new Date(item.history[item.history.length - 1].date).toLocaleDateString()}</p>
                 <div>
                     <h3>Change Status</h3>
                     {item.allowedTransitions.map((status) => (
                         <button key={status} onClick={() => handleChangeStatus(status)}>
-                            Change to {status}
+                            Change to {statusDisplayer(status)}
                         </button>
                     ))}
                 </div>

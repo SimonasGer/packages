@@ -12,6 +12,7 @@ export const Main = () => {
         recipientPhone: "",
         recipientAddress: "",
     })
+    const [status, setStatus] = useState("")
     const [dialogOpen, setDialogOpen] = useState(false);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
@@ -20,7 +21,7 @@ export const Main = () => {
         const fetchPackages = async () => {
             try {
                 setError("");
-                const res = await axios.get("http://localhost:5196/packages");
+                const res = await axios.get(`http://localhost:5196/packages?status=${status}`);
                 setPackages(res.data);
             } catch (err) {
                 setError("Failed to fetch packages");
@@ -29,10 +30,9 @@ export const Main = () => {
             }
         }
         fetchPackages();
-    }, [loading]);
+    }, [loading, status]);
 
     const handleChange = (event) => {
-        console.log(newPackage);
         setNewPackage({
             ...newPackage,
             [event.target.name]: event.target.value
@@ -75,9 +75,17 @@ export const Main = () => {
             </dialog>
             <h1>Packages</h1>
             <button onClick={() => setDialogOpen(!dialogOpen)}>Open/Close Dashboard</button>
+            <select name="status" id="status" onChange={(e) => setStatus(e.target.value)} value={status}>
+                <option value="">All</option>
+                <option value="0">Created</option>
+                <option value="1">Sent</option>
+                <option value="2">Accepted</option>
+                <option value="3">Returned</option>
+                <option value="4">Canceled</option>
+            </select>
             {loading && <p>Loading...</p>}
             {error && <p>{error}</p>}
-            <List packages={packages}/>
+            <List packages={packages} setLoading={setLoading}/>
         </main>
     );
 }

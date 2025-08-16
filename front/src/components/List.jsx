@@ -12,6 +12,7 @@ export const List = (props) => {
                     currentStatus={item.currentStatus}
                     dateCreated={item.dateCreated}
                     allowedTransitions={item.allowedTransitions}
+                    setLoading={props.setLoading}
                 />
             ))}
         </section>

@@ -27,6 +27,7 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
+// For testing http://localhost:5196/swagger
 if (app.Environment.IsDevelopment())
 {
     app.UseOpenApi();
@@ -38,6 +39,7 @@ if (app.Environment.IsDevelopment())
         config.DocExpansion = "list";
     });
 }
+
 app.UseCors("FrontendOnly");
 
 app.MapPackageEndpoints();
